@@ -1,0 +1,35 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: white;
+    padding: 15px;
+}
+
+.main {
+    display: grid;
+    grid-template-columns: 160px 160px 160px;
+    gap: 25px;
+}
+
+.box1 {
+    width: 160px;
+    height: 175px;
+    display: grid;
+    grid-template-columns: 35px 35px 35px 35px;
+    grid-template-rows: 38px 38px 38px 38px;
+    gap: 5px;
+}
+
+.box1 div {
+    border-radius: 4px;
+}
+
+
+
+.box1 div {
+    background: #ee8585;
+}
