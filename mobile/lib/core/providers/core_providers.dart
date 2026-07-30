@@ -1,8 +1,10 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import '../network/dio_client.dart';
+import '../offline/offline_queue_store.dart';
 import '../storage/secure_storage.dart';
 import '../storage/settings_store.dart';
 
@@ -31,3 +33,10 @@ final isOnlineProvider = StreamProvider<bool>((ref) {
     (results) => results.any((r) => r != ConnectivityResult.none),
   );
 });
+
+final offlineQueueStoreProvider = Provider<OfflineQueueStore>((ref) {
+  return OfflineQueueStore();
+});
+
+final uuidProvider = Provider<Uuid>((ref) => const Uuid());
+

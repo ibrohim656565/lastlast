@@ -13,6 +13,15 @@ class StoreIncidentRequest extends FormRequest
 
     public function rules(): array
     {
+        return static::fieldRules();
+    }
+
+    /**
+     * Shared with IncidentController@sync, which validates each item of
+     * `reports[]` by hand so one bad report doesn't fail the whole batch.
+     */
+    public static function fieldRules(): array
+    {
         return [
             'client_uuid' => ['required', 'uuid'],
             'type' => ['required', 'in:flood,landslide,earthquake,fire,avalanche,other'],

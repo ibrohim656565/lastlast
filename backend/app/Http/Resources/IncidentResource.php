@@ -25,14 +25,14 @@ class IncidentResource extends JsonResource
                 'lat' => $this->lat !== null ? (float) $this->lat : null,
                 'lng' => $this->lng !== null ? (float) $this->lng : null,
             ],
-            'province' => $this->whenLoaded('province', fn () => [
+            'province' => $this->whenLoaded('province', fn () => $this->province ? [
                 'id' => $this->province->id,
                 'name_en' => $this->province->name_en,
-            ]),
-            'district' => $this->whenLoaded('district', fn () => [
+            ] : null),
+            'district' => $this->whenLoaded('district', fn () => $this->district ? [
                 'id' => $this->district->id,
                 'name_en' => $this->district->name_en,
-            ]),
+            ] : null),
             'media' => IncidentMediaResource::collection($this->whenLoaded('media')),
             'reporter' => $this->whenLoaded('reporter', fn () => [
                 'id' => $this->reporter->id,
