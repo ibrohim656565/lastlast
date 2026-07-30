@@ -1,0 +1,140 @@
+{
+  "@@locale": "en",
+
+  "appName": "SafeTJ",
+
+  "actionContinue": "Continue",
+  "actionCancel": "Cancel",
+  "actionSubmit": "Submit",
+  "actionRetry": "Retry",
+  "actionSave": "Save",
+  "actionClose": "Close",
+  "actionCall": "Call",
+  "actionOpenInMaps": "Open in Maps",
+  "actionSignOut": "Sign out",
+
+  "commonLoading": "Loading…",
+  "commonError": "Something went wrong",
+  "commonOffline": "You are offline",
+  "commonOnline": "Back online",
+  "commonYes": "Yes",
+  "commonNo": "No",
+  "commonRequired": "Required",
+
+  "authTagline": "Report emergencies. Get help fast.",
+  "authPhoneLabel": "Phone number",
+  "authPhoneHint": "+992 XX XXX XXXX",
+  "authPhoneInvalid": "Enter a valid phone number",
+  "authOtpTitle": "Enter verification code",
+  "authOtpSubtitle": "We sent a code to {phone}",
+  "@authOtpSubtitle": {
+    "placeholders": { "phone": { "type": "String" } }
+  },
+  "authOtpHint": "6-digit code",
+  "authOtpInvalid": "Enter the 6-digit code",
+  "authResendCode": "Resend code",
+  "authVerify": "Verify",
+
+  "homeTitle": "SafeTJ",
+  "homeGreeting": "Hello, {name}",
+  "@homeGreeting": {
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "homeSelectEmergencyType": "Report an emergency",
+  "homeQuickAccess": "Quick access",
+  "homeMap": "Map",
+  "homeShelters": "Shelters",
+  "homeEmergencyNumbers": "Emergency numbers",
+  "homeAlerts": "Alerts",
+
+  "incidentTypeFlood": "Flood",
+  "incidentTypeLandslide": "Landslide",
+  "incidentTypeEarthquake": "Earthquake",
+  "incidentTypeFire": "Fire",
+  "incidentTypeAvalanche": "Avalanche",
+  "incidentTypeOther": "Other emergency",
+
+  "reportTitle": "Report: {type}",
+  "@reportTitle": {
+    "placeholders": { "type": { "type": "String" } }
+  },
+  "reportType": "Emergency type",
+  "reportDescriptionLabel": "Description",
+  "reportDescriptionHint": "What is happening? Any details that could help responders.",
+  "reportInjuredCount": "Injured people",
+  "reportRoadBlocked": "Is the road blocked?",
+  "reportAttachMedia": "Attach photos / videos",
+  "reportMediaLimit": "Up to {count} files",
+  "@reportMediaLimit": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "reportLocation": "Location",
+  "reportLocationFetching": "Getting your location…",
+  "reportLocationUnavailable": "Location unavailable — enable GPS and try again",
+  "reportSubmit": "Submit report",
+  "reportSubmitOnlineSuccess": "Report submitted. Help is on the way.",
+  "reportSubmitQueuedOffline": "No connection — report queued and will send automatically once you're back online.",
+  "reportSubmitError": "Could not submit report. Please try again.",
+  "reportPermissionLocationDenied": "Location permission is required to report an incident accurately.",
+  "reportPermissionCameraDenied": "Camera/photo permission was denied.",
+  "reportSyncedNotice": "{count} queued report(s) were sent",
+  "@reportSyncedNotice": {
+    "placeholders": { "count": { "type": "int" } }
+  },
+
+  "mapTitle": "Incident map",
+  "mapFilterType": "Type",
+  "mapFilterStatus": "Status",
+  "mapAllTypes": "All types",
+  "mapAllStatuses": "All statuses",
+  "mapNoIncidents": "No incidents found in this area",
+  "mapLoadError": "Could not load incidents",
+
+  "incidentStatusNew": "New",
+  "incidentStatusVerified": "Verified",
+  "incidentStatusDispatched": "Dispatched",
+  "incidentStatusResolved": "Resolved",
+
+  "sheltersTitle": "Shelters & services",
+  "sheltersTabShelter": "Shelters",
+  "sheltersTabHospital": "Hospitals",
+  "sheltersTabPolice": "Police",
+  "sheltersTabEmergencyCenter": "Emergency centers",
+  "sheltersDistanceAway": "{distance} km away",
+  "@sheltersDistanceAway": {
+    "placeholders": { "distance": { "type": "String" } }
+  },
+  "sheltersEmpty": "No locations found nearby",
+  "sheltersLoadError": "Could not load nearby locations",
+
+  "contactsTitle": "Emergency contacts",
+  "contactsFallbackNotice": "Showing standard emergency numbers — could not reach the server",
+  "contactsCategoryPolice": "Police",
+  "contactsCategoryAmbulance": "Ambulance",
+  "contactsCategoryFire": "Fire service",
+  "contactsCategoryGas": "Gas emergency",
+  "contactsCategoryRescueService": "Rescue service",
+  "contactsCategoryOther": "Other",
+
+  "notificationsTitle": "Alerts",
+  "notificationsEmpty": "No alerts yet",
+  "notificationsPermissionDenied": "Enable notifications to receive emergency alerts",
+
+  "settingsTitle": "Settings",
+  "settingsLanguage": "Language",
+  "settingsTheme": "Appearance",
+  "settingsThemeLight": "Light",
+  "settingsThemeDark": "Dark",
+  "settingsThemeSystem": "System",
+  "settingsProfile": "Profile",
+  "settingsName": "Name",
+  "settingsSignOut": "Sign out",
+  "settingsSignOutConfirm": "Are you sure you want to sign out?",
+  "settingsPhone": "Phone",
+
+  "errorNetworkError": "No internet connection",
+  "errorTimeoutError": "The request timed out",
+  "errorUnauthorized": "Your session expired — please sign in again",
+  "errorServerError": "Server error — please try again later",
+  "errorUnknownError": "Something went wrong"
+}
