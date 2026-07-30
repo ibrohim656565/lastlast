@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/localization/l10n_extensions.dart';
+import '../../../core/network/api_error_localizer.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/widgets/loading_primary_button.dart';
 import 'auth_controller.dart';
@@ -46,9 +47,12 @@ class _PhoneEntryScreenState extends ConsumerState<PhoneEntryScreen> {
     final AuthState authState = ref.watch(authControllerProvider);
 
     ref.listen<AuthState>(authControllerProvider, (previous, next) {
-      if (next.errorMessage != null && next.errorMessage != previous?.errorMessage) {
+      if (next.errorCode != null && next.errorCode != previous?.errorCode) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.errorMessage!), backgroundColor: AppColors.tjRed),
+          SnackBar(
+            content: Text(localizeErrorCode(l10n, next.errorCode!)),
+            backgroundColor: AppColors.tjRed,
+          ),
         );
       }
     });

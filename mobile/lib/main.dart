@@ -7,7 +7,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'core/localization/l10n_extensions.dart';
 import 'core/localization/locale_provider.dart';
+import 'core/offline/offline_sync_service.dart';
 import 'core/providers/core_providers.dart';
 import 'core/router/app_router.dart';
 import 'core/storage/hive_boxes.dart';
@@ -104,6 +106,7 @@ class _ForegroundNotificationBanner extends ConsumerStatefulWidget {
 class _ForegroundNotificationBannerState extends ConsumerState<_ForegroundNotificationBanner> {
   final GlobalKey<ScaffoldMessengerState> _messengerKey = GlobalKey<ScaffoldMessengerState>();
   StreamSubscription<AppNotification>? _bannerSub;
+  StreamSubscription<SyncBatchResult>? _syncSub;
 
   @override
   void initState() {
@@ -119,12 +122,21 @@ class _ForegroundNotificationBannerState extends ConsumerState<_ForegroundNotifi
           );
         },
       );
+      _syncSub = ref.read(offlineSyncServiceProvider).results.listen((batch) {
+        _messengerKey.currentState?.showSnackBar(
+          SnackBar(
+            content: Text(context.l10n.reportSyncedNotice(batch.succeeded)),
+            duration: const Duration(seconds: 4),
+          ),
+        );
+      });
     });
   }
 
   @override
   void dispose() {
     _bannerSub?.cancel();
+    _syncSub?.cancel();
     super.dispose();
   }
 
@@ -132,7 +144,39 @@ class _ForegroundNotificationBannerState extends ConsumerState<_ForegroundNotifi
   Widget build(BuildContext context) {
     return ScaffoldMessenger(
       key: _messengerKey,
-      child: widget.child ?? const SizedBox.shrink(),
+      child: _ConnectivityBanner(child: widget.child ?? const SizedBox.shrink()),
+    );
+  }
+}
+
+/// Thin persistent strip (not a transient snackbar) shown while the device
+/// has no network path, since "offline" is an ongoing state the user should
+/// stay aware of throughout the report flow, not a one-off event.
+class _ConnectivityBanner extends ConsumerWidget {
+  const _ConnectivityBanner({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bool isOnline = ref.watch(isOnlineProvider).valueOrNull ?? true;
+    return Column(
+      children: [
+        AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: isOnline ? 0 : 28,
+          width: double.infinity,
+          color: Colors.orange.shade800,
+          alignment: Alignment.center,
+          child: isOnline
+              ? null
+              : Text(
+                  context.l10n.commonOffline,
+                  style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                ),
+        ),
+        Expanded(child: child),
+      ],
     );
   }
 }

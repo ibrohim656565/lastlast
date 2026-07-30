@@ -64,7 +64,11 @@ class SheltersScreen extends ConsumerWidget {
           ),
         ),
         body: state.errorMessage != null
-            ? ErrorRetryView(message: l10n.sheltersLoadError, onRetry: controller.refresh)
+            ? ErrorRetryView(
+                message: l10n.sheltersLoadError,
+                onRetry: controller.refresh,
+                retryLabel: l10n.actionRetry,
+              )
             : Column(
                 children: [
                   SizedBox(
@@ -124,12 +128,14 @@ class SheltersScreen extends ConsumerWidget {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             IconButton(
+                                              tooltip: l10n.actionCall,
                                               icon: const Icon(Icons.call),
                                               onPressed: point.phone.isEmpty
                                                   ? null
                                                   : () => _call(point.phone),
                                             ),
                                             IconButton(
+                                              tooltip: l10n.actionOpenInMaps,
                                               icon: const Icon(Icons.directions),
                                               onPressed: () => _openInMaps(point),
                                             ),

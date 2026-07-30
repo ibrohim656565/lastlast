@@ -92,6 +92,7 @@ class _IncidentMapScreenState extends ConsumerState<IncidentMapScreen> {
                 ? ErrorRetryView(
                     message: l10n.mapLoadError,
                     onRetry: _loadAroundUser,
+                    retryLabel: l10n.actionRetry,
                   )
                 : Stack(
                     children: [
@@ -207,6 +208,13 @@ class _FilterBar extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         children: [
+          Center(
+            child: Text(
+              '${l10n.mapFilterType}:',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          const SizedBox(width: 8),
           FilterChip(
             label: Text(l10n.mapAllTypes),
             selected: state.filters.type == null,
@@ -224,6 +232,13 @@ class _FilterBar extends ConsumerWidget {
             );
           }),
           const SizedBox(width: 16),
+          Center(
+            child: Text(
+              '${l10n.mapFilterStatus}:',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          const SizedBox(width: 8),
           FilterChip(
             label: Text(l10n.mapAllStatuses),
             selected: state.filters.status == null,

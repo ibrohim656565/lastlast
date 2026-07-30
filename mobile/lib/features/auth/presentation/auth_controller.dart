@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/network/api_error_localizer.dart';
 import '../../../core/providers/core_providers.dart';
 import '../data/auth_repository.dart';
 import '../domain/user.dart';
@@ -24,7 +25,7 @@ class AuthState {
   const AuthState({
     this.step = AuthStep.unknown,
     this.isLoading = false,
-    this.errorMessage,
+    this.errorCode,
     this.verificationId,
     this.phoneNumber,
     this.user,
@@ -32,7 +33,10 @@ class AuthState {
 
   final AuthStep step;
   final bool isLoading;
-  final String? errorMessage;
+
+  /// Wire-level error code (or raw Firebase message) — localize with
+  /// [localizeErrorCode] at display time, not here.
+  final String? errorCode;
   final String? verificationId;
   final String? phoneNumber;
   final AppUser? user;
@@ -40,7 +44,7 @@ class AuthState {
   AuthState copyWith({
     AuthStep? step,
     bool? isLoading,
-    String? errorMessage,
+    String? errorCode,
     bool clearError = false,
     String? verificationId,
     String? phoneNumber,
@@ -49,7 +53,7 @@ class AuthState {
     return AuthState(
       step: step ?? this.step,
       isLoading: isLoading ?? this.isLoading,
-      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      errorCode: clearError ? null : (errorCode ?? this.errorCode),
       verificationId: verificationId ?? this.verificationId,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       user: user ?? this.user,
@@ -93,11 +97,11 @@ class AuthController extends StateNotifier<AuthState> {
           state = state.copyWith(isLoading: false, step: AuthStep.authenticated, user: user);
         },
         onFailed: (message) {
-          state = state.copyWith(isLoading: false, errorMessage: message);
+          state = state.copyWith(isLoading: false, errorCode: message);
         },
       );
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      state = state.copyWith(isLoading: false, errorCode: extractErrorCode(e));
     }
   }
 
@@ -112,7 +116,7 @@ class AuthController extends StateNotifier<AuthState> {
       );
       state = state.copyWith(isLoading: false, step: AuthStep.authenticated, user: user);
     } catch (e) {
-      state = state.copyWith(isLoading: false, errorMessage: e.toString());
+      state = state.copyWith(isLoading: false, errorCode: extractErrorCode(e));
     }
   }
 
