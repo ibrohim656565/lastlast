@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreDeviceTokenRequest;
+use App\Models\DeviceToken;
 use Illuminate\Support\Facades\Log;
 
 class DeviceTokenController extends Controller
@@ -12,6 +13,14 @@ class DeviceTokenController extends Controller
     {
         $data = $request->validated();
         $user = $request->user();
+
+        // A physical device may switch accounts (logout/login as someone
+        // else); `token` is globally unique, so drop any stale row owned by
+        // a different user before (re)assigning it to this one.
+        DeviceToken::query()
+            ->where('token', $data['token'])
+            ->where('user_id', '!=', $user->id)
+            ->delete();
 
         $deviceToken = $user->deviceTokens()->updateOrCreate(
             ['token' => $data['token']],

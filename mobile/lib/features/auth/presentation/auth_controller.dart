@@ -15,11 +15,14 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
   );
 });
 
-enum AuthStep { enterPhone, enterOtp, authenticated }
+/// [unknown] is the transient state while `checkExistingSession` resolves
+/// against secure storage — the router shows a splash screen for it so we
+/// never flash the phone-entry screen for an already-signed-in user.
+enum AuthStep { unknown, enterPhone, enterOtp, authenticated }
 
 class AuthState {
   const AuthState({
-    this.step = AuthStep.enterPhone,
+    this.step = AuthStep.unknown,
     this.isLoading = false,
     this.errorMessage,
     this.verificationId,
@@ -61,12 +64,16 @@ class AuthController extends StateNotifier<AuthState> {
 
   Future<void> checkExistingSession() async {
     final bool hasSession = await _repository.hasStoredSession();
-    if (!hasSession) return;
+    if (!hasSession) {
+      state = state.copyWith(step: AuthStep.enterPhone);
+      return;
+    }
     try {
       final AppUser user = await _repository.fetchMe();
       state = state.copyWith(step: AuthStep.authenticated, user: user);
     } catch (_) {
       // Stored token is stale/invalid; fall through to phone entry.
+      state = state.copyWith(step: AuthStep.enterPhone);
     }
   }
 
@@ -111,7 +118,7 @@ class AuthController extends StateNotifier<AuthState> {
 
   Future<void> signOut() async {
     await _repository.signOut();
-    state = const AuthState();
+    state = const AuthState(step: AuthStep.enterPhone);
   }
 
   void setUser(AppUser user) {

@@ -18,7 +18,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         try {
-            $verified = $this->firebaseAuth->verifyIdToken($request->string('firebase_id_token'));
+            $verified = $this->firebaseAuth->verifyIdToken((string) $request->input('firebase_id_token'));
         } catch (FailedToVerifyToken $e) {
             return response()->json([
                 'message' => 'Invalid or expired Firebase ID token.',

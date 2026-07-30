@@ -25,14 +25,22 @@ final connectivityProvider = Provider<Connectivity>((ref) {
   return Connectivity();
 });
 
-/// Emits `true` while the device believes it has a network path. Backed by
-/// `connectivity_plus`; note this reflects link state, not true internet
-/// reachability, which is an accepted trade-off for triggering queue sync.
-final isOnlineProvider = StreamProvider<bool>((ref) {
+/// Raw connectivity-change stream, exposed separately from
+/// [isOnlineProvider] so non-widget consumers (e.g. [OfflineSyncService])
+/// can subscribe to it directly instead of through a [StreamProvider],
+/// which only exposes its latest [AsyncValue] via `ref.read`/`ref.watch`.
+final connectivityStreamProvider = Provider<Stream<bool>>((ref) {
   final Connectivity connectivity = ref.watch(connectivityProvider);
   return connectivity.onConnectivityChanged.map(
     (results) => results.any((r) => r != ConnectivityResult.none),
   );
+});
+
+/// Emits `true` while the device believes it has a network path. Backed by
+/// `connectivity_plus`; note this reflects link state, not true internet
+/// reachability, which is an accepted trade-off for triggering queue sync.
+final isOnlineProvider = StreamProvider<bool>((ref) {
+  return ref.watch(connectivityStreamProvider);
 });
 
 final offlineQueueStoreProvider = Provider<OfflineQueueStore>((ref) {
