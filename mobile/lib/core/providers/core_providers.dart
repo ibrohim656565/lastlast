@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import '../location/location_service.dart';
 import '../network/dio_client.dart';
 import '../offline/offline_queue_store.dart';
 import '../storage/secure_storage.dart';
@@ -39,4 +40,6 @@ final offlineQueueStoreProvider = Provider<OfflineQueueStore>((ref) {
 });
 
 final uuidProvider = Provider<Uuid>((ref) => const Uuid());
+
+final locationServiceProvider = Provider<LocationService>((ref) => LocationService());
 
