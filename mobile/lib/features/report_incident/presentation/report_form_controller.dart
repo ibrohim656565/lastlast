@@ -19,7 +19,6 @@ class ReportFormState {
     this.isFetchingLocation = false,
     this.locationError = false,
     this.isSubmitting = false,
-    this.errorMessage,
   });
 
   final IncidentType type;
@@ -31,7 +30,6 @@ class ReportFormState {
   final bool isFetchingLocation;
   final bool locationError;
   final bool isSubmitting;
-  final String? errorMessage;
 
   ReportFormState copyWith({
     IncidentType? type,
@@ -43,8 +41,6 @@ class ReportFormState {
     bool? isFetchingLocation,
     bool? locationError,
     bool? isSubmitting,
-    String? errorMessage,
-    bool clearError = false,
   }) {
     return ReportFormState(
       type: type ?? this.type,
@@ -56,7 +52,6 @@ class ReportFormState {
       isFetchingLocation: isFetchingLocation ?? this.isFetchingLocation,
       locationError: locationError ?? this.locationError,
       isSubmitting: isSubmitting ?? this.isSubmitting,
-      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );
   }
 }
@@ -105,7 +100,7 @@ class ReportFormController extends StateNotifier<ReportFormState> {
       return ReportSubmitOutcome.failed;
     }
 
-    state = state.copyWith(isSubmitting: true, clearError: true);
+    state = state.copyWith(isSubmitting: true);
     final String clientUuid = _ref.read(uuidProvider).v4();
     final bool isOnline = _ref.read(isOnlineProvider).valueOrNull ?? true;
 

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -179,6 +180,52 @@ class _IncidentMapScreenState extends ConsumerState<IncidentMapScreen> {
               Text(l10n.reportRoadBlocked, style: const TextStyle(fontWeight: FontWeight.w600)),
             if (incident.injuredCount > 0)
               Text('${l10n.reportInjuredCount}: ${incident.injuredCount}'),
+            if (incident.media.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 72,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: incident.media.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    final IncidentMedia media = incident.media[index];
+                    final String? thumb = media.thumbnailUrl ?? media.url;
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: media.type == MediaType.photo && thumb != null
+                          ? CachedNetworkImage(
+                              imageUrl: thumb,
+                              width: 72,
+                              height: 72,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                width: 72,
+                                height: 72,
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                width: 72,
+                                height: 72,
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                child: const Icon(Icons.broken_image_outlined),
+                              ),
+                            )
+                          : Container(
+                              width: 72,
+                              height: 72,
+                              color: Colors.black87,
+                              child: const Icon(
+                                Icons.play_circle_fill,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ],
         ),
       ),

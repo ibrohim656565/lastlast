@@ -77,14 +77,6 @@ class ReportIncidentScreen extends ConsumerWidget {
     final ReportFormController controller =
         ref.read(reportFormControllerProvider(initialType).notifier);
 
-    ref.listen<ReportFormState>(reportFormControllerProvider(initialType), (previous, next) {
-      if (next.errorMessage != null && next.errorMessage != previous?.errorMessage) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.errorMessage!), backgroundColor: AppColors.tjRed),
-        );
-      }
-    });
-
     Future<void> handleSubmit() async {
       final ReportSubmitOutcome outcome = await controller.submit();
       if (!context.mounted) return;
