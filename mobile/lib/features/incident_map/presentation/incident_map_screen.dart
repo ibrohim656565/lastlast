@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -92,6 +93,7 @@ class _IncidentMapScreenState extends ConsumerState<IncidentMapScreen> {
                 ? ErrorRetryView(
                     message: l10n.mapLoadError,
                     onRetry: _loadAroundUser,
+                    retryLabel: l10n.actionRetry,
                   )
                 : Stack(
                     children: [
@@ -178,6 +180,52 @@ class _IncidentMapScreenState extends ConsumerState<IncidentMapScreen> {
               Text(l10n.reportRoadBlocked, style: const TextStyle(fontWeight: FontWeight.w600)),
             if (incident.injuredCount > 0)
               Text('${l10n.reportInjuredCount}: ${incident.injuredCount}'),
+            if (incident.media.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 72,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: incident.media.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    final IncidentMedia media = incident.media[index];
+                    final String? thumb = media.thumbnailUrl ?? media.url;
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: media.type == MediaType.photo && thumb != null
+                          ? CachedNetworkImage(
+                              imageUrl: thumb,
+                              width: 72,
+                              height: 72,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                width: 72,
+                                height: 72,
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                width: 72,
+                                height: 72,
+                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                child: const Icon(Icons.broken_image_outlined),
+                              ),
+                            )
+                          : Container(
+                              width: 72,
+                              height: 72,
+                              color: Colors.black87,
+                              child: const Icon(
+                                Icons.play_circle_fill,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -207,6 +255,13 @@ class _FilterBar extends ConsumerWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         children: [
+          Center(
+            child: Text(
+              '${l10n.mapFilterType}:',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          const SizedBox(width: 8),
           FilterChip(
             label: Text(l10n.mapAllTypes),
             selected: state.filters.type == null,
@@ -224,6 +279,13 @@ class _FilterBar extends ConsumerWidget {
             );
           }),
           const SizedBox(width: 16),
+          Center(
+            child: Text(
+              '${l10n.mapFilterStatus}:',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+          const SizedBox(width: 8),
           FilterChip(
             label: Text(l10n.mapAllStatuses),
             selected: state.filters.status == null,

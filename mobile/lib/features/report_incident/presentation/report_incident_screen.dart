@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart' as ph;
 
 import '../../../core/constants/app_config.dart';
 import '../../../core/constants/incident_constants.dart';
@@ -35,7 +36,22 @@ class ReportIncidentScreen extends ConsumerWidget {
     }
   }
 
+  /// `image_picker` can trigger the native photo-library / camera prompt on
+  /// its own, but we ask via `permission_handler` first (same as location)
+  /// so a denial surfaces a consistent, localized message instead of
+  /// image_picker's platform-default (and English-only) system dialog text.
+  Future<bool> _ensureMediaPermission(BuildContext context) async {
+    final ph.PermissionStatus status = await ph.Permission.photos.request();
+    if (status.isGranted || status.isLimited) return true;
+    if (!context.mounted) return false;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(context.l10n.reportPermissionCameraDenied)),
+    );
+    return false;
+  }
+
   Future<void> _pickPhotos(BuildContext context, WidgetRef ref, IncidentType type) async {
+    if (!await _ensureMediaPermission(context)) return;
     final ImagePicker picker = ImagePicker();
     final List<XFile> files = await picker.pickMultiImage(limit: AppConfig.maxMediaPerReport);
     if (files.isEmpty) return;
@@ -45,6 +61,7 @@ class ReportIncidentScreen extends ConsumerWidget {
   }
 
   Future<void> _pickVideo(BuildContext context, WidgetRef ref, IncidentType type) async {
+    if (!await _ensureMediaPermission(context)) return;
     final ImagePicker picker = ImagePicker();
     final XFile? file = await picker.pickVideo(source: ImageSource.gallery);
     if (file == null) return;
@@ -59,14 +76,6 @@ class ReportIncidentScreen extends ConsumerWidget {
     final ReportFormState formState = ref.watch(reportFormControllerProvider(initialType));
     final ReportFormController controller =
         ref.read(reportFormControllerProvider(initialType).notifier);
-
-    ref.listen<ReportFormState>(reportFormControllerProvider(initialType), (previous, next) {
-      if (next.errorMessage != null && next.errorMessage != previous?.errorMessage) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(next.errorMessage!), backgroundColor: AppColors.tjRed),
-        );
-      }
-    });
 
     Future<void> handleSubmit() async {
       final ReportSubmitOutcome outcome = await controller.submit();
